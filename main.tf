@@ -17,19 +17,22 @@ provider "google" {
 
 #VPC
 resource "google_compute_network" "vpc_network" {
-  name = "my-terraform-network"
+  name = "zinum-vpc"
 }
 
 #Virtual Machine
 resource "google_compute_instance" "vm_instance" {
-  name         = "my-tf-instance"
-  machine_type = "f1-micro"
+  name         = "bastion"
+  machine_type = "n1-standard-1"
+  tags = ["bastion"] 
 
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-11"
     }
   }
+
+  metadata_startup_script = file(var.bastion_script)
 
   network_interface {
     network = google_compute_network.vpc_network.name
